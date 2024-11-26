@@ -53,24 +53,43 @@ Node* node_search(Node* head, int value_data)
 
 void node_print_list(Node* first_node)
 {
+    printf("Now printing node list: ");
     for (Node* temp = first_node; temp != NULL; temp = temp->next) {
-        printf("%d <-> ", temp->data); 
+        printf("%d:%p <-> ", temp->data, temp); 
     }
+    printf("\n");
+}
+
+void node_destroy(Node* node)
+{
+    if(node->prev != NULL)
+    {
+        node->prev->next = node->next;
+    }
+    if(node->next != NULL)
+    {
+        node->next->prev = node->prev;
+    }
+    free(node);
 }
 
 int main()
 {
     Node* head = node_create(10);
     node_insert(11, head, NULL);
-    node_insert(12, head->next, NULL);
+    Node* delete_this_node = node_insert(12, head->next, NULL);
     node_insert(13, head->next->next, NULL);
     head = node_insert(9, NULL, head);
+    node_insert(69, head, head->next);
 
-    //node_print_list(head);
-    int search_query = 15;
+    node_print_list(head);
+    int search_query = 11;
     Node* node_search_result = node_search(head, search_query); 
     printf("Search for a node with data value: %d\n",  search_query);
     printf("Data found at memory address: %p\n",  node_search_result);
+    node_destroy(delete_this_node);
+    printf("Deleted node with value 12, now showing new list\n");
+    node_print_list(head);
     return 0;
 }
 
