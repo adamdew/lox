@@ -83,12 +83,7 @@ public class Scanner {
                 addToken(match('=') ? GREATER_EQUAL : GREATER);
                 break;
             case '/':
-                if (match('/')) {
-                    // A comment goes until the end of the line.
-                    while (peek() != '\n' && !isAtEnd()) advance();
-                } else {
-                    addToken(SLASH);
-                }
+                handleComment();
                 break;
             case ' ':
             case '\r':
@@ -108,6 +103,31 @@ public class Scanner {
                 } else {
                     Lox.error(line, "Unexpected character.");
                 }
+        }
+    }
+
+    private void handleComment(){
+        if (match('/')) {
+            // A single line comment goes until the end of the line.
+            while (peek() != '\n' && !isAtEnd()) advance();
+        } 
+        else if (match('*')) {
+            //now we are inside the multi-line comment
+            while (!isAtEnd()) {
+                if (peek() == '\n') {
+                    line++;
+                }
+                // Check for multi-line comment end
+                if (peek() == '*' && peekNext() == '/') {
+                    advance();
+                    advance();
+                    break;
+                }
+                advance();
+            }                 
+        }
+        else {
+            addToken(SLASH);
         }
     }
 
