@@ -123,7 +123,12 @@ public class Scanner {
                     advance();
                     break;
                 }
-                advance();
+                if((peek() == '/' && peekNext() == '*') || (peek() == '/')){
+                    // Could be a nested comment, recurse back into main char scanner
+                    scanToken();
+                } else {
+                    advance();
+                }
             }                 
         }
         else {
